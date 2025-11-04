@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>first html</title>
+    <style>
+        /* body {
+            font-size: 10px;기본 rem
+        } */
+        h1,
+        nav,
+        footer {
+            font-size: 1.5rem;
+            border: 1px solid green;
+            padding: 10px;
+            margin: 5px;
+        }
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        main,
+        article,
+        aside {
+            border: 1px solid red;
+        }
+
+        /* 꺽쇠는 바로 아래 직계일때만 */
+        main section {
+            border: 1px dotted blue;
+        }
+
+        .container {
+            background-color: yellow;
+            width: 100px;
+        }
+        
+        ul li:first-child {
+            font-weight: 700;
+        }
+
+        ol li:nth-child(odd):not(.x) {
+            font-weight: 700;
+        }
+
+        /* h1의 형제 중.. 표현 */
+        /* h1 + nav */
+    </style>
+</head>
+
+<body>
+    <!-- lorem50 -->
+    <!-- Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus vel accusamus nobis vero odio, aperiam distinctio, optio esse quis aliquid vitae, incidunt labore quibusdam provident. Animi neque nobis at deleniti magni nam. Odio voluptate consequuntur cupiditate, pariatur quaerat eveniet enim voluptas? Blanditiis corporis quibusdam enim possimus, consectetur voluptatum dolore tenetur. -->
+    <header>
+        <h1>Title</h1>
+        <nav>Nav</nav>
+    </header>
+
+    <main style="display: flex; align-items: center; justify-content: center;"> <!-- flex로 인라인 태그로 변경-->
+        <!-- .container :div는 .으로 -->
+        <div class="container">
+        <section aria-label="section1" onclick="console.log('xxx')" aria-hidden-'true'> <!-- 웹 접근성 위배 회피, 이스터에그용 -->
+            <h3>Section1</h3>
+            <ul>
+                <li>111</li>
+                <li><a href="#" onClick="" role="button">22</li>
+                <li>333</li>
+            </ul>
+            <article draggable="true">
+                <h3>Article</h3>
+                <!-- ol>li{$}*3 -->
+                <ol>
+                    <li>1</li>
+                    <li>2</li>
+                    <li class="x">3</li>
+                    <li>4</li>
+                    <li>5</li>
+                    <li>6</li>
+                </ol>
+            </article>
+        </section>
+        </div>
+
+        <!-- <aside style="text-align: center; width: 100px;">Aside</aside> -->
+        <aside style="display: flex; justify-content: center; width: 100px; height: 200px; align-items: end;">Aside</aside>
+    </main>
+
+    <footer style="text-align: center;">&#169; Hanaro 2025</footer>
+</body>
+
+</html>
