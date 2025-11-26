@@ -13,16 +13,22 @@ const ff: FN = (i: string | number) => {
 ff(1);
 
 const f2 = (i: string | number | boolean) => +i + 1;
-const f3 = (i: string | number) => +i + 1;
-type Y = string | number;
-let y: Y = 1;
-const f4 = (i: string) => +i + 1;
-// cb = f4; // dog = animal;
-// f4 = cb;
+const f4 = (i: string | number) => +i + 1;
+// cb = f2
+// cb = f4 // dog = animal;
 function f(cb: FN) {
-  cb(y);
   cb("1");
 }
 f(f2);
-f(f3);
-// f(f4);
+f(f4);
+
+// ---
+const arr = [1, 2, 3];
+if (arr[1]) console.log(arr[0]?.toFixed(1), arr[1] + 100);
+
+type OBJ = { [k: string | number]: number }; // 인덱스 시크니처
+let o1: OBJ = { 1: 1, a: 2 };
+console.log("🚀 ~ o1:", o1);
+const obj: { [x: string]: number } = { id: 1 }; // 키는 스트링, 값은 밸류로만 올 수 있음
+const a = "idd";
+if (obj[a]) console.log("🚀 ~ obj:", obj[a] + 1);
