@@ -27,7 +27,7 @@
     // Style Options
     // "noImplicitReturns": true,
     // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
+    "noUnusedLocals": true,
     // "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
@@ -40,6 +40,6 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force", // 모든 파일을 모듈로 디텍팅해서 스코프가 달라지므로 중복 오류가 안 나게 해줌
-    "skipLibCheck": true,
+    "skipLibCheck": true
   }
 }
