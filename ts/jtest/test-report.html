@@ -1,0 +1,499 @@
+<html><head><meta charset="utf-8"/><title>Jest Test Report</title><style type="text/css">:root {
+  --text-primary: #111;
+  --text-secondary: #4f4f4f;
+  --success: #006633;
+  --success-bright: #80ffbf;
+  --danger: #cc071e;
+  --danger-bright: #fbdfe0;
+  --warning: #995c00;
+  --warning-bright: #ffeea8;
+  --panel: #eee;
+  --border: #949494;
+  --disabled: #6b6b6b;
+}
+
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+}
+body {
+  padding: 2rem 1rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+#metadata-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.additional-information-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/** SUMMARY */
+#summary {
+  color: var(--text-primary);
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 0.5rem;
+  background: var(--panel);
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 1rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: var(--success);
+  border-left: 0.4rem solid var(--success);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: var(--danger);
+  border-left: 0.4rem solid var(--danger);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-pending {
+  color: var(--warning);
+  border-left: 0.4rem solid var(--warning);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-empty {
+  color: var(--disabled);
+  border-left: 0.4rem solid var(--disabled);
+  margin-bottom: 0.15rem;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: var(--success-bright);
+  color: var(--success);
+}
+.test-result.failed {
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.test-result.pending {
+  background-color: var(--warning-bright);
+  color: var(--warning);
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--danger);
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 1rem;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: var(--panel);
+  color: var(--text-secondary);
+  border: 0.15rem solid;
+  border-color: var(--panel);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  border-color: var(--border);
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 1rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.85rem;
+}
+.suite-info .suite-time.warn {
+  background-color: var(--danger);
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 1rem;
+  transform: rotate(180deg) translateY(0.15rem);
+}
+.suite-container[open] .suite-info:before {
+  transform: rotate(0deg) translateY(0.15rem);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--panel);
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><main class="jesthtml-content"><header><h1 id="title">Jest Test Report</h1></header><section id="metadata-container"><div id="timestamp">Started: 2025-12-03 09:20:42</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (2)</div><div class="summary-passed ">2 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (6)</div><div class="summary-passed ">6 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></section><details id="suite-1" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/green/dev/workspace/hana8/ts/jtest/sum.mock.test.ts</div><div class="suite-time">0.023s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">sum</div><div class="test-title">sumId</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div></div><div class="suite-consolelog"><div class="suite-consolelog-header">Console Log</div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at sumId (/Users/green/dev/workspace/hana8/ts/jtest/sum.ts:12:11)
+    at Object.&lt;anonymous&gt; (/Users/green/dev/workspace/hana8/ts/jtest/sum.mock.test.ts:17:19)</pre><pre class="suite-consolelog-item-message">🚀 ~ sumId ~ users: [
+  { id: 1 }, { id: 2 },
+  { id: 3 }, { id: 4 },
+  { id: 5 }, { id: 6 },
+  { id: 7 }, { id: 8 },
+  { id: 9 }, { id: 10 }
+]</pre></div></div></details><details id="suite-2" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">/Users/green/dev/workspace/hana8/ts/jtest/sum.test.ts</div><div class="suite-time">0.896s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">user-fetch-test</div><div class="test-title">fecthUser with not-exists userId</div><div class="test-status">passed</div><div class="test-duration">0.55s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">user-fetch-test</div><div class="test-title">fetchUser with 1</div><div class="test-status">passed</div><div class="test-duration">0.089s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">sum - integer</div><div class="test-title">sum - 0 with no-params</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">sum - integer</div><div class="test-title">sum 3 with 1, 2</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">user-fetch-test</div><div class="test-title">users sum of ids</div><div class="test-status">passed</div><div class="test-duration">0.164s</div></div></div></div><div class="suite-consolelog"><div class="suite-consolelog-header">Console Log</div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at Object.&lt;anonymous&gt; (/Users/green/dev/workspace/hana8/ts/jtest/sum.test.ts:5:13)
+    at Promise.finally.completed (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+    at _callCircusHook (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:976:40)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at _runTestsForDescribeBlock (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:800:7)
+    at _runTestsForDescribeBlock (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+    at run (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+    at runAndTransformResultsToJestFormat (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+    at jestAdapter (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-circus@30.2.0/node_modules/jest-circus/build/runner.js:101:19)
+    at runTestInternal (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-runner@30.2.0/node_modules/jest-runner/build/index.js:275:16)
+    at runTest (/Users/green/dev/workspace/hana8/ts/jtest/node_modules/.pnpm/jest-runner@30.2.0/node_modules/jest-runner/build/index.js:343:7)</pre><pre class="suite-consolelog-item-message">beforeAll!!</pre></div><div class="suite-consolelog-item"><pre class="suite-consolelog-item-origin">    at sumId (/Users/green/dev/workspace/hana8/ts/jtest/sum.ts:12:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Object.&lt;anonymous&gt; (/Users/green/dev/workspace/hana8/ts/jtest/sum.test.ts:20:23)</pre><pre class="suite-consolelog-item-message">🚀 ~ sumId ~ users: [
+  {
+    id: 1,
+    name: 'Leanne Graham',
+    username: 'Bret',
+    email: 'Sincere@april.biz',
+    address: {
+      street: 'Kulas Light',
+      suite: 'Apt. 556',
+      city: 'Gwenborough',
+      zipcode: '92998-3874',
+      geo: [Object]
+    },
+    phone: '1-770-736-8031 x56442',
+    website: 'hildegard.org',
+    company: {
+      name: 'Romaguera-Crona',
+      catchPhrase: 'Multi-layered client-server neural-net',
+      bs: 'harness real-time e-markets'
+    }
+  },
+  {
+    id: 2,
+    name: 'Ervin Howell',
+    username: 'Antonette',
+    email: 'Shanna@melissa.tv',
+    address: {
+      street: 'Victor Plains',
+      suite: 'Suite 879',
+      city: 'Wisokyburgh',
+      zipcode: '90566-7771',
+      geo: [Object]
+    },
+    phone: '010-692-6593 x09125',
+    website: 'anastasia.net',
+    company: {
+      name: 'Deckow-Crist',
+      catchPhrase: 'Proactive didactic contingency',
+      bs: 'synergize scalable supply-chains'
+    }
+  },
+  {
+    id: 3,
+    name: 'Clementine Bauch',
+    username: 'Samantha',
+    email: 'Nathan@yesenia.net',
+    address: {
+      street: 'Douglas Extension',
+      suite: 'Suite 847',
+      city: 'McKenziehaven',
+      zipcode: '59590-4157',
+      geo: [Object]
+    },
+    phone: '1-463-123-4447',
+    website: 'ramiro.info',
+    company: {
+      name: 'Romaguera-Jacobson',
+      catchPhrase: 'Face to face bifurcated interface',
+      bs: 'e-enable strategic applications'
+    }
+  },
+  {
+    id: 4,
+    name: 'Patricia Lebsack',
+    username: 'Karianne',
+    email: 'Julianne.OConner@kory.org',
+    address: {
+      street: 'Hoeger Mall',
+      suite: 'Apt. 692',
+      city: 'South Elvis',
+      zipcode: '53919-4257',
+      geo: [Object]
+    },
+    phone: '493-170-9623 x156',
+    website: 'kale.biz',
+    company: {
+      name: 'Robel-Corkery',
+      catchPhrase: 'Multi-tiered zero tolerance productivity',
+      bs: 'transition cutting-edge web services'
+    }
+  },
+  {
+    id: 5,
+    name: 'Chelsey Dietrich',
+    username: 'Kamren',
+    email: 'Lucio_Hettinger@annie.ca',
+    address: {
+      street: 'Skiles Walks',
+      suite: 'Suite 351',
+      city: 'Roscoeview',
+      zipcode: '33263',
+      geo: [Object]
+    },
+    phone: '(254)954-1289',
+    website: 'demarco.info',
+    company: {
+      name: 'Keebler LLC',
+      catchPhrase: 'User-centric fault-tolerant solution',
+      bs: 'revolutionize end-to-end systems'
+    }
+  },
+  {
+    id: 6,
+    name: 'Mrs. Dennis Schulist',
+    username: 'Leopoldo_Corkery',
+    email: 'Karley_Dach@jasper.info',
+    address: {
+      street: 'Norberto Crossing',
+      suite: 'Apt. 950',
+      city: 'South Christy',
+      zipcode: '23505-1337',
+      geo: [Object]
+    },
+    phone: '1-477-935-8478 x6430',
+    website: 'ola.org',
+    company: {
+      name: 'Considine-Lockman',
+      catchPhrase: 'Synchronised bottom-line interface',
+      bs: 'e-enable innovative applications'
+    }
+  },
+  {
+    id: 7,
+    name: 'Kurtis Weissnat',
+    username: 'Elwyn.Skiles',
+    email: 'Telly.Hoeger@billy.biz',
+    address: {
+      street: 'Rex Trail',
+      suite: 'Suite 280',
+      city: 'Howemouth',
+      zipcode: '58804-1099',
+      geo: [Object]
+    },
+    phone: '210.067.6132',
+    website: 'elvis.io',
+    company: {
+      name: 'Johns Group',
+      catchPhrase: 'Configurable multimedia task-force',
+      bs: 'generate enterprise e-tailers'
+    }
+  },
+  {
+    id: 8,
+    name: 'Nicholas Runolfsdottir V',
+    username: 'Maxime_Nienow',
+    email: 'Sherwood@rosamond.me',
+    address: {
+      street: 'Ellsworth Summit',
+      suite: 'Suite 729',
+      city: 'Aliyaview',
+      zipcode: '45169',
+      geo: [Object]
+    },
+    phone: '586.493.6943 x140',
+    website: 'jacynthe.com',
+    company: {
+      name: 'Abernathy Group',
+      catchPhrase: 'Implemented secondary concept',
+      bs: 'e-enable extensible e-tailers'
+    }
+  },
+  {
+    id: 9,
+    name: 'Glenna Reichert',
+    username: 'Delphine',
+    email: 'Chaim_McDermott@dana.io',
+    address: {
+      street: 'Dayna Park',
+      suite: 'Suite 449',
+      city: 'Bartholomebury',
+      zipcode: '76495-3109',
+      geo: [Object]
+    },
+    phone: '(775)976-6794 x41206',
+    website: 'conrad.com',
+    company: {
+      name: 'Yost and Sons',
+      catchPhrase: 'Switchable contextually-based project',
+      bs: 'aggregate real-time technologies'
+    }
+  },
+  {
+    id: 10,
+    name: 'Clementina DuBuque',
+    username: 'Moriah.Stanton',
+    email: 'Rey.Padberg@karina.biz',
+    address: {
+      street: 'Kattie Turnpike',
+      suite: 'Suite 198',
+      city: 'Lebsackbury',
+      zipcode: '31428-2261',
+      geo: [Object]
+    },
+    phone: '024-648-3804',
+    website: 'ambrose.net',
+    company: {
+      name: 'Hoeger LLC',
+      catchPhrase: 'Centralized empowering task-force',
+      bs: 'target end-to-end models'
+    }
+  }
+]</pre></div></div></details></main></body></html>

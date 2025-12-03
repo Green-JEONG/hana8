@@ -2,7 +2,7 @@
 import { sumId } from "./sum";
 
 describe.only("sum", () => {
-  // ToDo sdlfjdslfj
+  // ToDo remove when server 
   beforeAll(() => {
     const mockFetch = jest.fn();
     global.fetch = mockFetch;
