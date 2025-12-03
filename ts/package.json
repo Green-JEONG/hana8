@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@types/node": "^24.10.1"
+    "@types/node": "^24.10.1",
+    "jest-html-reporter": "^4.3.0"
   }
 }

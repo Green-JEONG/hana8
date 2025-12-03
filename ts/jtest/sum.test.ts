@@ -15,7 +15,7 @@ describe("sum - integer", () => {
   });
 });
 
-describe.skip("user-fetch-test", () => {
+describe("user-fetch-test", () => {
   test("users sum of ids", async () => {
     const sumUserId = await sumId();
     expect(sumUserId).toBe(55);
@@ -27,7 +27,7 @@ describe.skip("user-fetch-test", () => {
     await expect(fetchUser(bret.id)).resolves.toStrictEqual(bret);
   });
 
-  test("fecthUser with not-exists userId", async () => {
+  test("fetchUser with not-exists userId", async () => {
     await expect(fetchUser(100)).rejects.toThrow(`100 User Not Found!`);
   });
 });
