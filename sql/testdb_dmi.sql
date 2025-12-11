@@ -9,10 +9,8 @@ select dept, count(*), avg(salary) from Emp where dept < 5
 
 select dept, count(*) from Emp group by dept having count(*) >= 40;
 
-select e.dept, count(e.ename), (select dname from Dept where id = e.dept)
 select e.dept, count(e.ename) cnt, (select dname from Dept where id = e.dept)
   from Emp e
- group by e.dept having count(*) >= 35;
  group by e.dept having cnt >= 35;
 
 select * from Emp;
@@ -20,7 +18,6 @@ select * from Dept;
 
 select e.*, d.* from Emp e join Dept d on e.dept = d.id;
 select e.dept, count(*), max(d.dname) from Emp e join Dept d on e.dept = d.id
- group by e.dept;
  group by e.dept;
  
 -- 부서 별 급여 평균이 전체 평균보다 높은 부서의 id와 평균 급여를 구하시오.
@@ -54,4 +51,54 @@ select e.*
              on e.dept = d.dept and e.salary = d.salary
  order by e.dept;
 
+select * from Dept;
+desc Dept;
+select * from Emp where id in (26, 30);
+-- 김나나, 김바순,
+select dept, min(ename), group_concat(ename order by ename) from Emp group by dept;
+select d.id, d.dname, (select id from Emp where dept = d.id order by ename limit 1) from Dept d
+-- update Dept set d.captain = (select id from Emp where dept = d.id order by ename limit 1)
+where id > 0; -- safe updates 모드일 경우
+
+select d.*, e.ename
+  from Dept d inner join Emp e on d.captain = e.id;
+
+select d.id, d.dname, e.id eid, e.ename
+  from Dept d inner join Emp e on d.id = e.dept;
+
+alter table Emp add column outdt date null comment '퇴사일' after salary;
+
+select * from Emp
+-- update Emp set outdt = '2025-11-25'
+ where id in (3, 5);
+ 
+select * from Emp where id in (14, 26);
+select * from Dept where captain in (14, 26);
+
+select d.*, e.*
+  from Dept d inner join Emp e on d.captain = e.id
+ where e.id in (14, 26);
+ 
+select current_date();
+select e.*, d.*, (case when e.id = d.captain then null else d.captain end)
+ from Emp e inner join Dept d on e.dept = d.id in (14,26);
+-- 방식1) inner join 방식
+update Emp e inner join Dept d on e.dept = d.id
+   -- set e.outdt = current_date(), d.captain = (case when d.id = d.captain then null else d.captain end)
+   set e.outdt = current_date(), d.captain = e.id
+   -- set e.outdt = current_date(), d.captain = (case when d.captain in (14, 26) then null else d.captain end)
+ where e.id in (14, 26);
+ 
+update Emp set outdt = null where id in (14, 26);
+update Dept set captain = 26 where id = 1;
+
+-- 방식2) outer join 활용
+select *
+  from Emp e left outer join Dept d on e.id = d.captain
+ where e.id in (14, 26);
+ 
+update Emp e left outer join Dept d on e.id = d.captain
+  set e.outdt  = curdate(), d.captain = null
+ where e.id in (14, 26);
+ 
 select * from Dept;
