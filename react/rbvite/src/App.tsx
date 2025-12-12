@@ -14,6 +14,7 @@ export type Session = {
   loginUser: LoginUser | null;
   cart: Item[];
 };
+export type LoginFunction = (name: string, age: number) => void;
 
 const DefaultSession = {
   // loginUser: null,
@@ -38,24 +39,60 @@ function App() {
   // console.log('🚀 ~ x:', x);
   const [session, setSession] = useState<Session>(DefaultSession);
 
+  // plusCount(100)
+  // const pc = () => setCount(count + 1);
+  const plusCount = () => setCount((prevCount) => prevCount + 1);
+
   const logout = () => {
     // session.loginUser = null; // fail !!
     setSession({ ...session, loginUser: null });
   };
 
+  const login: LoginFunction = (name, age) => {
+    if (!name || !age) return alert('Input Name and Age, plz!');
+
+    setSession({ ...session, loginUser: { id: 1, name, age } });
+  };
+
+  const removeItem = (id: number) => {
+    if (!confirm('Are u sure?')) return;
+
+    //   setSession({
+    //     ...session,
+    //     cart: [...session.cart.filter((item) => item.id !== id)],
+
+    setSession({
+      ...session,
+      cart: session.cart.filter((item) => item.id !== id),
+    });
+  };
+
+  const addItem = (name: string, price: number) => {
+    const newItem = {
+      id: Math.max(...session.cart.map((item) => item.id), 0) + 1,
+      name,
+      price,
+    };
+    setSession({ ...session, cart: [...session.cart, newItem] });
+  };
+
   return (
     <div className='grid place-items-center h-screen'>
-      <h1 className='test-3xl'>count: {count}</h1>
-      <My session={session} logout={logout} />
-      <div className='card'>
-        <Hello
-          name={session.loginUser?.name}
-          age={session.loginUser?.age}
-          setCount={setCount}
-        >
-          반갑습니다
-        </Hello>
-      </div>
+      <h1 className='text-3xl'>count: {count}</h1>
+      <My
+        session={session}
+        logout={logout}
+        login={login}
+        removeItem={removeItem}
+        addItem={addItem}
+      />
+      <Hello
+        name={session.loginUser?.name}
+        age={session.loginUser?.age}
+        plusCount={plusCount}
+      >
+        반갑습니다!
+      </Hello>
     </div>
   );
 }
