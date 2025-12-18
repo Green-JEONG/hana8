@@ -1,20 +1,47 @@
-import type { LoginUser } from '../App';
+import { useImperativeHandle, type RefObject } from 'react';
 import Button from '../ui/Button';
+import { useSession } from '../hooks/SessionContext';
 
 type Prop = {
-  loginUser: LoginUser;
+  ref: RefObject<ProfileHandler | null>;
+};
+
+export type ProfileHandler = {
+  xxx: string;
+  showLoginUser: () => void;
   logout: () => void;
 };
-export default function Profile({ loginUser, logout }: Prop) {
+
+export default function Profile({ ref }: Prop) {
+  const {
+    session: { loginUser },
+    logout,
+  } = useSession();
+
+  const showLoginUser = () => {
+    alert(loginUser?.name);
+  };
+
+  const xxx = 'sdsdsfafdfs';
+
+  useImperativeHandle(ref, () => ({
+    xxx,
+    showLoginUser,
+    logout,
+  }));
+
   return (
     <>
-      <h1 className='text-2xl'>LoginUser: {loginUser.name}</h1>
-      <Button
-        onClick={logout}
-        className='bg-red-500 hover:bg-red-400 text-white'
-      >
-        LogOut
-      </Button>
+      <h1 className='text-2xl'>LoginUser: {loginUser?.name}</h1>
+      <div className='flex gap-5'>
+        <Button
+          onClick={logout}
+          className='bg-red-500 hover:bg-red-400 text-white'
+        >
+          LogOut
+        </Button>
+        <Button onClick={showLoginUser}>Show LoginUser</Button>
+      </div>
     </>
   );
 }

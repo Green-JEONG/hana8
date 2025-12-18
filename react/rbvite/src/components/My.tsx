@@ -1,98 +1,201 @@
-import type { LoginFunction, Session } from '../App';
-import Small from '../ui/Small';
-import Button from '../ui/Button';
+import { PlusIcon } from 'lucide-react';
+import {
+  useActionState,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  useTransition,
+  type ChangeEvent,
+} from 'react';
+import { useFormStatus } from 'react-dom';
+import { type ItemType, useSession } from '../hooks/SessionContext';
+import { useInterval, useThrottle } from '../hooks/useTimer';
+import Item from './Item';
 import Login from './Login';
-import Profile from './Profile';
+import Profile, { type ProfileHandler } from './Profile';
+import Button from '../ui/Button';
 import LabelInput from '../ui/LabelInput';
-import { useRef, type FormEvent, type RefObject } from 'react';
-import { FilePlus2Icon } from 'lucide-react';
+import Spinner from '../ui/Spinner';
 
-type Prop = {
-  session: Session;
-  logout: () => void;
-  login: LoginFunction;
-  removeItem: (id: number) => void;
-  addItem: (name: string, price: number) => void;
-};
+export default function My() {
+  const { session } = useSession();
+  // const [isAdding, setAdding] = useState(false);
+  // const toggleAdding = () => setAdding((pre) => !pre);
+  const [isAdding, toggleAdding] = useReducer((pre) => !pre, false);
+  // const [totalPrice, addPrice] = useReducer((pre, action) => pre + action, 0);
+  // addPrice(1000)
+  /*
+  function useReducer(reducer, initValueOrFunction) {
+    const [state, setState] = useState(initValueOrFunction);
+    const dispatch = (action) => {
+      setState(reducer(preState, action));
+    };
 
-export default function My({
-  session,
-  logout,
-  login,
-  removeItem,
-  addItem,
-}: Prop) {
-  // const idRef = useRef<HTMLInputElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const priceRef = useRef<HTMLInputElement>(null);
+    return [state, dispatch];
+  }
+  */
 
-  const editItem = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const name = nameRef.current?.value;
-    const price = priceRef.current?.value;
-    let msg;
-    let ref: RefObject<HTMLInputElement | null> | null = null;
+  const profileHandlerRef = useRef<ProfileHandler>(null);
 
-    if (!name) {
-      // alert('Input the item name!');
-      // nameRef.current?.focus();
-      msg = 'Input the iem name!';
-      ref = nameRef;
-    }
+  const item101 = session.cart.find((item) => item.id === 101);
+  // useEffect(() => {
+  //   console.log('🚀 ~ item101:', item101);
+  // }, [item101]);
 
-    if (!price) {
-      // alert('Input the item price!');
-      // nameRef.current?.focus();
-      ref = priceRef;
-    }
+  const [badSec, setBadSec] = useState(0);
+  const [goodSec, setGoodSec] = useState(0);
 
-    if (msg) {
-      alert(msg);
-      if (ref && ref.current) ref.current.focus();
-      return;
-    }
+  useEffect(() => {
+    setInterval(() => setBadSec((p) => p + 1), 1000);
+  }, []);
 
-    addItem(name ?? '', Number(price));
+  // useEffect(() => {
+  //   const intl = setInterval(() => setGoodSec((p) => p + 1), 1000);
+  //   return () => clearInterval(intl);
+  // }, []);
 
-    if (nameRef.current && priceRef.current) {
-      nameRef.current.value = '';
-      priceRef.current.value = '';
-      nameRef.current.focus();
-    }
+  // const f = () => setGoodSec((p) => p + 1);
+
+  // const ff = (n: number) => {
+  const ff = () => {
+    // console.log('🚀 ~ n:', n, goodSec); // n은 영원히 1 (: )
+    // setGoodSec(n + 1); // 위 goodSec는 영원히 0
+    setGoodSec((p) => p + 1);
   };
+  // goodSec + 1 의 값이
+  // console.log('🚀 ~ goodSec:', goodSec);
+  // const { reset, clear } = useInterval(ff, 1000, goodSec + 1);
+  const { reset, clear } = useInterval(ff, 1000);
+  // useInterval(setGoodSec, 1000, goodSec + 1);
+  // useInterval(() => setGoodSec((p) => p + 1), 1000);
+  // useInterval(f, 1000);
+
+  // const [data, setData] = useState<ItemType[]>([]);
+  // useLayoutEffect(() => {
+  //   const controller = new AbortController();
+  //   const { signal } = controller;
+  //   fetch('/data/sample.json', { signal })
+  //     .then((res) => res.json())
+  //     .then(setData);
+
+  //   return () => controller.abort();
+  // }, []);
+
+  const totalPrice = useMemo(
+    () => session.cart.reduce((acc, item) => acc + item.price, 0),
+    [session.cart]
+  );
+
+  const [searchStr, setSearchStr] = useState('');
+  // const debouncedSearchStr = useDebounce(searchStr, 500);
+  const debouncedSearchStr = useThrottle(searchStr, 500);
+
+  const deferredStr = useDeferredValue(searchStr, 'xxx');
+  // useEffect(() => {
+  //   clearTimeout(searchStr);
+  // }, [deferredStr]);
+
+  const [searchResult, setSearchResult] = useState<ItemType[]>([]);
+  const [isSearching, startSearchTransition] = useTransition();
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    startSearchTransition(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const str = e.target.value;
+      setSearchStr(str);
+      setSearchResult(session.cart.filter((item) => item.name.includes(str)));
+    });
+  };
+
+  const [results, search, isPending] = useActionState(
+    async (preResults: ItemType[], formData: FormData) => {
+      const str = formData.get('ActionState') as string;
+      console.log('******', preResults, str);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      return session.cart.filter((item) => item.name.includes(str));
+    },
+    []
+  );
 
   return (
     <>
-      {session?.loginUser ? (
-        <Profile loginUser={session.loginUser} logout={logout} />
-      ) : (
-        <Login login={login} />
-      )}
+      <h1 className='text-xl'>
+        bad: {badSec}, good: {goodSec}
+      </h1>
+      <div className='flex'>
+        <button onClick={reset}>reset</button>
+        <button onClick={clear}>clear</button>
+      </div>
+      {session?.loginUser ? <Profile ref={profileHandlerRef} /> : <Login />}
       <hr />
-      <ul>
-        {session.cart.map(({ id, name, price }) => (
-          <li key={id}>
-            <Small>{id}.</Small> {name}
-            <Small>{price.toLocaleString()}원</Small>
-            <Button
-              onClick={() => removeItem(id)}
-              className='ml-2 px-1 py-0 text-sm bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-2xl active:scale-150 transition duration-300'
-            >
-              X
-            </Button>
-          </li>
-        ))}
-      </ul>
+      <a
+        href='#!'
+        onClick={(e) => {
+          e.preventDefault();
+          profileHandlerRef.current?.showLoginUser();
+          console.log('xxx>>', profileHandlerRef.current?.xxx);
+        }}
+      >
+        {item101?.name}
+      </a>
+      <h2 className='text-xl'>Tot: {totalPrice.toLocaleString()}원</h2>
 
-      <form onSubmit={editItem} className='flex gap-1'>
-        {/* <input type='number' ref={idRef} placeholder='=' className='number' /> */}
-        <LabelInput ref={nameRef} placeholder='name...' />
-        <LabelInput type='number' ref={priceRef} placeholder='price...' />
-        <Button type='submit' className='text-blue-500'>
-          {/* <SaveIcon /> */}
-          <FilePlus2Icon />
-        </Button>
+      {isPending ? (
+        <Spinner />
+      ) : (
+        <div>SR_ActionState :{results.map((item) => item.name).join()}</div>
+      )}
+
+      <div>SR_Transition: {searchResult.map((item) => item.name).join()}</div>
+      {isSearching ? (
+        <Spinner />
+      ) : (
+        <h2 className='text-xl text-red-500'>
+          {searchStr} : {deferredStr} : {debouncedSearchStr}
+        </h2>
+      )}
+
+      {/* <form action={search}> */}
+      <form className='flex gap-2'>
+        <LabelInput label='ActionState' autoComplete='off' />
+        <button formAction={search}>Action</button>
+        <SearchButton />
       </form>
+
+      <LabelInput
+        label='Transition'
+        onChange={handleSearch}
+        autoComplete='off'
+      />
+      <ul>
+        {session.cart
+          ?.filter((item) => item.name.includes(debouncedSearchStr))
+          .map((item) => (
+            <li key={item.id}>
+              <Item item={item} />
+            </li>
+          ))}
+        <li className='text-center'>
+          {isAdding ? (
+            <Item
+              item={{ id: 0, name: 'New Item', price: 3000 }}
+              toggleAdding={toggleAdding}
+            />
+          ) : (
+            <Button onClick={toggleAdding} className=''>
+              <PlusIcon />
+            </Button>
+          )}
+        </li>
+      </ul>
     </>
   );
+}
+
+function SearchButton() {
+  const { pending, data } = useFormStatus();
+  if (data) console.log('ddddddd>>', data, pending);
+  return <button disabled={pending}>SearchButton</button>;
 }

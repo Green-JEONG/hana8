@@ -1,48 +1,80 @@
-import { useEffect, useRef, type FormEvent } from 'react';
+import { useEffect, useImperativeHandle, useRef, type FormEvent } from 'react';
+import { useSession } from '../hooks/SessionContext';
 import Button from '../ui/Button';
-import type { LoginFunction } from '../App';
 import LabelInput from '../ui/LabelInput';
-type Props = {
-  login: LoginFunction;
-};
-export default function Login({ login }: Props) {
-  // const [name, setName] = useState('');
-  // const [age, setAge] = useState(0);
-  // console.log('🚀 ~ name/age:', name);
 
+export type LoginHandler = {
+  validate: () => void;
+  focusName: () => void;
+};
+
+export default function Login() {
+  const { login, loginHandlerRef: ref } = useSession();
   const nameRef = useRef<HTMLInputElement>(null);
   const ageRef = useRef<HTMLInputElement>(null);
 
+  useImperativeHandle(ref, () => ({
+    validate() {
+      if (!nameRef.current?.value) {
+        alert('Input the name!');
+        nameRef.current?.focus();
+        return false;
+      }
+
+      if (!ageRef.current?.value) {
+        alert('Input the age!');
+        ageRef.current?.focus();
+        return false;
+      }
+
+      return true;
+    },
+
+    focusName() {
+      nameRef.current?.focus();
+    },
+  }));
+
   const makeLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (nameRef.current?.value && ageRef.current?.value) {
-      login(nameRef.current.value, Number(ageRef.current.value));
-    }
+    // if (nameRef.current?.value && ageRef.current?.value)
+    login(nameRef.current?.value ?? '', Number(ageRef.current?.value));
+  };
+
+  const loginAction = (formData: FormData) => {
+    const formObj = Object.fromEntries(formData.entries());
+    console.log('🚀 ~ formData:', formObj);
+    const name = formData.get('name') as string;
+    const age = Number(formData.get('age'));
+    login(name, age);
   };
 
   useEffect(() => {
-    // 마운트하면 포커징 됨
-    if (nameRef.current) nameRef.current.focus();
+    console.log('Login plz...');
+    nameRef.current?.focus();
+
+    return () => console.log('Login success!!');
   }, []);
 
   return (
     <div className='border border-red-300 p-3 rounded-lg'>
-      <h1 className='text-2xl text-green-500 text-center font-medium'>Login</h1>
+      <h1 className='text-2xl text-center font-medium'>Login</h1>
+      <form action={loginAction} className='space-y-3'>
+        <input type='text' name='name' />
+        <input type='number' name='age' />
+        <Button className='bg-blue-500 text-white hover:bg-blue-600'>
+          LoginAction
+        </Button>
+      </form>
       <form onSubmit={makeLogin} className='space-y-3'>
+        <LabelInput label='Name' ref={nameRef} />
+        <LabelInput
+          type='number'
+          ref={ageRef}
+          // onChange={(e) => setAge(+e.target.value)}
+          placeholder='Age...'
+        />
         {/* <div>
-          <label htmlFor='name' className='text-sm text-gray-600'>
-            Name
-          </label>
-          <input
-            type='text'
-            id='name'
-            onChange={(e) => setName(e.target.value)}
-            placeholder='user name...'
-            className='w-full'
-            required
-          />
-        </div>
-        <div>
           <label htmlFor='age' className='text-sm text-gray-600'>
             Age
           </label>
@@ -56,13 +88,6 @@ export default function Login({ login }: Props) {
             required
           />
         </div> */}
-        <LabelInput label='Name' ref={nameRef} />
-        <LabelInput
-          type='number'
-          ref={ageRef}
-          // onChange={(e) => setAge(+e.target.value)}
-          placeholder='Age...'
-        />
 
         <div className='text-center'>
           <button type='reset'>Cancel</button>
@@ -75,30 +100,6 @@ export default function Login({ login }: Props) {
           </Button>
         </div>
       </form>
-
-      {/* <div className='flex items-center justify-center pt-4 pb-3 gap-5 text-center'>
-        <div>
-          <p>Name</p>
-          <input
-            type='text'
-            className='border border-gray-300 rounded-md py-2'
-          />
-        </div>
-        <div>
-          <p>age</p>
-          <input
-            type='number'
-            className='border border-gray-300 rounded-md py-2'
-          />
-        </div>
-      </div>
-
-      <button
-        onClick={login}
-        className='w-full border-0 py-2 rounded-md cursor-pointer bg-gray-100 hover:bg-gray-200'
-      >
-        Sign In
-      </button> */}
     </div>
   );
 }
