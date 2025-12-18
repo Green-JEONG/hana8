@@ -32,6 +32,8 @@ export default defineConfig([
       ...reactHooks.configs.recommended.rules,
       'react/jsx-key': 'error',
       'react/no-array-index-key': 'warn',
+      'react-refresh/only-export-components': 'off',
+      'react-hooks/exhaustive-deps': 'off', // 19버전에서 설정
     },
   },
 ]);
