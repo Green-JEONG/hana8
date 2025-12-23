@@ -1,14 +1,16 @@
-import { type PropsWithChildren } from 'react';
+import { useEffect, useEffectEvent, type PropsWithChildren } from 'react';
 import { useCounter } from '../hooks/CounterContext';
 import { useSession } from '../hooks/SessionContext';
 import { useFetch } from '../hooks/useFetch';
 import { useToggle } from '../hooks/useToggle';
-import Button from '../ui/Button';
+import Btn from './ui/Btn';
+import { Button } from './ui/button';
 
 export default function Hello({ children }: PropsWithChildren) {
+  'use cache';
   const { count, plusCount } = useCounter();
   // const [toggler, toggle] = useReducer((p) => !p, false);
-  const [, toggle] = useToggle();
+  const [tog, toggle] = useToggle();
   const {
     session: { loginUser },
   } = useSession();
@@ -41,11 +43,20 @@ export default function Hello({ children }: PropsWithChildren) {
   //   console.log('effect Array!!!', array);
   // }, []);
 
+  const t = useEffectEvent(() => console.log('effect - tog!!!', tog));
+
+  useEffect(() => {
+    t();
+    console.log('effect - count!!!', count);
+  }, [count, tog]);
+
   return (
     <div className='border border-red-300 p-3 text-center'>
       {error && <h2 className='text-red-500'>Error: {error}</h2>}
-      <h2 className='text-2xl'>
-        {count + 1}: {isLoading ? '...' : user?.username}
+      <h2
+        className={`text-2xl ${count % 2 === 0 ? 'text-blue-500' : 'text-inherit'}`}
+      >
+        {count + 1}: {tog ? 'T' : 'F'} :: {isLoading ? '...' : user?.username}
       </h2>
       <input type='text' onChange={toggle} />
       <h2 className='text-2xl'>
@@ -53,9 +64,10 @@ export default function Hello({ children }: PropsWithChildren) {
         {age && <small className='text-sm'>({age})</small>}
       </h2>
       <div>{children}</div>
-      <Button className='font-bold' onClick={plusCount}>
+      <Btn className='font-bold' onClick={plusCount}>
         count + 1
-      </Button>
+      </Btn>
+      <Button variant={'link'}></Button>
       <button onClick={toggle}>Toggle</button>
     </div>
   );

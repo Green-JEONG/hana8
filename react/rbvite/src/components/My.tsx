@@ -14,11 +14,10 @@ import { useFormStatus } from 'react-dom';
 import { type ItemType, useSession } from '../hooks/SessionContext';
 import { useInterval, useThrottle } from '../hooks/useTimer';
 import Item from './Item';
-import Login from './Login';
-import Profile, { type ProfileHandler } from './Profile';
-import Button from '../ui/Button';
-import LabelInput from '../ui/LabelInput';
-import Spinner from '../ui/Spinner';
+import Btn from './ui/Btn';
+import LabelInput from './ui/LabelInput';
+import Spinner from './ui/Spinner';
+import { Button } from './ui/button';
 
 export default function My() {
   const { session } = useSession();
@@ -37,8 +36,6 @@ export default function My() {
     return [state, dispatch];
   }
   */
-
-  const profileHandlerRef = useRef<ProfileHandler>(null);
 
   const item101 = session.cart.find((item) => item.id === 101);
   // useEffect(() => {
@@ -98,17 +95,6 @@ export default function My() {
   //   clearTimeout(searchStr);
   // }, [deferredStr]);
 
-  const [searchResult, setSearchResult] = useState<ItemType[]>([]);
-  const [isSearching, startSearchTransition] = useTransition();
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    startSearchTransition(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const str = e.target.value;
-      setSearchStr(str);
-      setSearchResult(session.cart.filter((item) => item.name.includes(str)));
-    });
-  };
-
   const [results, search, isPending] = useActionState(
     async (preResults: ItemType[], formData: FormData) => {
       const str = formData.get('ActionState') as string;
@@ -123,12 +109,14 @@ export default function My() {
     <>
       <h1 className='text-xl'>
         bad: {badSec}, good: {goodSec}
+        <div className='flex space-x-3'>
+          <Button variant={'outline'} onClick={}></Button>
+        </div>
       </h1>
       <div className='flex'>
         <button onClick={reset}>reset</button>
         <button onClick={clear}>clear</button>
       </div>
-      {session?.loginUser ? <Profile ref={profileHandlerRef} /> : <Login />}
       <hr />
       <a
         href='#!'
@@ -140,6 +128,7 @@ export default function My() {
       >
         {item101?.name}
       </a>
+
       <h2 className='text-xl'>Tot: {totalPrice.toLocaleString()}원</h2>
 
       {isPending ? (
@@ -158,9 +147,9 @@ export default function My() {
       )}
 
       {/* <form action={search}> */}
-      <form className='flex gap-2'>
+      <form className='flex gap-2 items-center'>
         <LabelInput label='ActionState' autoComplete='off' />
-        <button formAction={search}>Action</button>
+        <Button formAction={search}>Action</Button>
         <SearchButton />
       </form>
 
@@ -184,9 +173,9 @@ export default function My() {
               toggleAdding={toggleAdding}
             />
           ) : (
-            <Button onClick={toggleAdding} className=''>
+            <Btn onClick={toggleAdding} className=''>
               <PlusIcon />
-            </Button>
+            </Btn>
           )}
         </li>
       </ul>
@@ -197,5 +186,9 @@ export default function My() {
 function SearchButton() {
   const { pending, data } = useFormStatus();
   if (data) console.log('ddddddd>>', data, pending);
-  return <button disabled={pending}>SearchButton</button>;
+  return (
+    <Button variant={'secondary'} disabled={pending}>
+      SearchButton
+    </Button>
+  );
 }

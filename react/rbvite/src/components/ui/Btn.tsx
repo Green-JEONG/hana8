@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import type { PropsWithChildren } from 'react';
 
 type Prop = {
@@ -7,7 +8,7 @@ type Prop = {
   className?: string;
 };
 
-export default function Button({
+export default function Btn({
   onClick,
   type,
   className,
@@ -17,7 +18,9 @@ export default function Button({
   return (
     <button
       type={type}
-      className={`${className}`}
+      className={cn(
+        `hover:bg-gray-100  border py-1 px-2 rounded-md cursor-pointer${className}`
+      )}
       onClick={onClick}
       disabled={disabled}
     >

@@ -1,7 +1,7 @@
 import { useRef, useState, type FormEvent, type RefObject } from 'react';
-import Small from '../ui/Small';
-import Button from '../ui/Button';
-import LabelInput from '../ui/LabelInput';
+import Small from './ui/Small';
+import Btn from './ui/Btn';
+import LabelInput from './ui/LabelInput';
 import { FilePlus2Icon, RotateCcwIcon, SaveIcon } from 'lucide-react';
 import { useSession, type ItemType } from '../hooks/SessionContext';
 
@@ -97,17 +97,13 @@ export default function Item({ item, toggleAdding }: Props) {
             onChange={checkDirty}
             placeholder='price...'
           />
-          <Button onClick={cancelEdit} type='reset' className=''>
+          <Btn onClick={cancelEdit} type='reset' className=''>
             <RotateCcwIcon />
-          </Button>
+          </Btn>
           {hasDirty && (
-            <Button
-              type='submit'
-              className='text-blue-500'
-              disabled={!hasDirty}
-            >
+            <Btn type='submit' className='text-blue-500' disabled={!hasDirty}>
               {item.id ? <SaveIcon /> : <FilePlus2Icon />}
-            </Button>
+            </Btn>
           )}
         </form>
       ) : (
@@ -120,14 +116,14 @@ export default function Item({ item, toggleAdding }: Props) {
             {item.name}
           </button>
           <Small>{item.price.toLocaleString()}원</Small>
-          <Button
+          <Btn
             onClick={() => {
               if (removeItem) removeItem(item.id);
             }}
             className='ml-2 px-1 py-0 text-sm bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-2xl active:scale-150 transition duration-300'
           >
             X
-          </Button>
+          </Btn>
         </>
       )}
     </>
