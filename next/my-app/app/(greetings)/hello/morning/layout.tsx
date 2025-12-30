@@ -6,10 +6,11 @@ export default function MorningLayout({ children }: PropsWithChildren) {
     <>
       <h1>Morning Layout</h1>
       {/* .flex.gap-3 */}
-      <div className="flex gap-3"></div>
-      <Link href={"/"}>Home</Link>
-      <Link href={"/hello"}>Hello</Link>
-      <Link href={"/hello/morning"}>Morning</Link>
+      <div className="flex gap-3">
+        <Link href={"/"}>Home</Link>
+        <Link href={"/hello"}>Hello</Link>
+        <Link href={"/hello/morning"}>Morning</Link>
+      </div>
       <div className="border p-5 text-center">{children}</div>
     </>
   );
